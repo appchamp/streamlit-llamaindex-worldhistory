@@ -59,7 +59,7 @@ if st.secrets.has_key("openai_key"):
     api_key = st.secrets.openai_key
     st.status("Using existing API Key from st.secrets", state="complete")
 else:
-    api_key = st.sidebar.text_input(
+    api_key = st.text_input(
         label="#### Your OpenAI API key 👇",
         placeholder="Paste your openAI API key, sk-",
         type="password")
