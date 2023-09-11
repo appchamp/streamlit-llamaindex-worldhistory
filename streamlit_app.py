@@ -1,13 +1,22 @@
 import streamlit as st
-from llama_index import VectorStoreIndex, ServiceContext, Document
+from llama_index import (
+    SimpleDirectoryReader, 
+    VectorStoreIndex, 
+    ServiceContext, 
+    Document,)
 from llama_index.llms import OpenAI
 import openai
-from llama_index import SimpleDirectoryReader
 
-st.set_page_config(page_title="Chat with the Streamlit docs, powered by LlamaIndex", page_icon="🦙", layout="centered", initial_sidebar_state="auto", menu_items=None)
-openai.api_key = st.secrets.openai_key
-st.title("Chat with the World history, powered by LlamaIndex 💬🦙")
+st.set_page_config(page_title="WorldHistory QA powered by LlamaIndex", page_icon="🦙", layout="centered", initial_sidebar_state="auto", menu_items=None)
+st.title("World History QA, powered by LlamaIndex 💬🦙")
 
+if st.secrets.has_key(openai_key):
+    openai.api_key = st.secrets.openai_key
+else:
+    openai.api_key = st.sidebar.text_input(
+        label="#### Your OpenAI API key 👇",
+        placeholder="Paste your openAI API key, sk-",
+        type="password")
 
 if "messages" not in st.session_state.keys(): # Initialize the chat messages history
     st.session_state.messages = [
