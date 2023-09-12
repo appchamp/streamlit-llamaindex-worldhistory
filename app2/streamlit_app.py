@@ -11,7 +11,7 @@ from llama_index import (
 from langchain.chat_models import ChatOpenAI
 
 index_name = "./saved_index_wh"
-documents_folder = "./data/world-history-txt"
+documents_folder = "./docs/world-history-txt"
 
 @st.cache_resource
 def initialize_index(index_name, documents_folder):
@@ -27,13 +27,12 @@ def initialize_index(index_name, documents_folder):
             service_context=service_context,
         )
     else:
-        state = st.status("No exiting index found.. creating index..", expanded=True, state="running")
-        documents = SimpleDirectoryReader(documents_folder).load_data()
-        index = GPTVectorStoreIndex.from_documents(
-            documents, service_context=service_context
-        )
-        state.update("Index creation DONE !", expanded=False, state="complete")
-
+        with st.status("No exiting index found.. creating index..", expanded=True, state="running") as status:
+            documents = SimpleDirectoryReader(documents_folder).load_data()
+            index = GPTVectorStoreIndex.from_documents(
+                documents, service_context=service_context
+            )
+            status.update(label="Index creation DONE !", expanded=False, state="complete")
         index.storage_context.persist(persist_dir=index_name)
 
     return index
@@ -47,7 +46,7 @@ def query_index(_index, query_text):
     return str(response)
 
 
-st.title("🦙 World History - LlamaIndex 🦙")
+st.title("World History - LlamaIndex 🦙")
 st.header("Welcome to World History.")
 st.write(
     "Your query will be answered using the essay as context, using embeddings from text-ada-002 and LLM completions from gpt-3.5-turbo."
